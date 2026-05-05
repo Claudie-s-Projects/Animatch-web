@@ -17,7 +17,10 @@ defineProps<{ animal: Animal }>()
     </div>
 
     <div class="p-4 space-y-1">
-      <h2 class="font-semibold text-lg">{{ animal.nom }}</h2>
+      <div class="flex items-center justify-between">
+        <h2 class="font-semibold text-lg">{{ animal.nom }}</h2>
+        <UrgenceBadge :urgence="animal.urgence" />
+      </div>
       <p class="text-sm text-gray-500">{{ animal.espece }} · {{ animal.race }}</p>
       <p class="text-sm text-gray-500">{{ animal.age }}</p>
       <p v-if="animal.refuge" class="text-xs text-gray-400">{{ animal.refuge.nom }} — {{ animal.refuge.ville }}</p>
