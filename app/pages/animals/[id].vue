@@ -1,0 +1,59 @@
+<script setup lang="ts">
+const route = useRoute()
+const { fetchAnimal } = useAnimals()
+
+const { data: animal } = await fetchAnimal(Number(route.params.id))
+
+if (!animal.value) {
+  throw createError({ statusCode: 404, message: 'Animal introuvable' })
+}
+</script>
+
+<template>
+  <main class="max-w-3xl mx-auto px-4 py-8">
+    <NuxtLink to="/animals" class="text-sm text-gray-500 hover:underline mb-6 inline-block">
+      ← Retour au catalogue
+    </NuxtLink>
+
+    <div v-if="animal" class="space-y-6">
+      <div class="flex items-center gap-3">
+        <h1 class="text-3xl font-bold">{{ animal.nom }}</h1>
+        <UrgenceBadge :urgence="animal.urgence" />
+      </div>
+
+      <img
+        v-if="animal.photo_url"
+        :src="animal.photo_url"
+        :alt="animal.nom"
+        class="w-full max-h-96 object-cover rounded-xl"
+      />
+
+      <div class="grid grid-cols-2 gap-4 text-sm">
+        <div><span class="text-gray-500">Espèce</span><p class="font-medium">{{ animal.espece ?? '—' }}</p></div>
+        <div><span class="text-gray-500">Race</span><p class="font-medium">{{ animal.race ?? '—' }}</p></div>
+        <div><span class="text-gray-500">Âge</span><p class="font-medium">{{ animal.age ?? '—' }}</p></div>
+        <div><span class="text-gray-500">Sexe</span><p class="font-medium">{{ animal.sexe ?? '—' }}</p></div>
+      </div>
+
+      <div v-if="animal.description">
+        <h2 class="font-semibold mb-2">Description</h2>
+        <p class="text-sm text-gray-700 whitespace-pre-line">{{ animal.description }}</p>
+      </div>
+
+      <div v-if="animal.refuge" class="border rounded-xl p-4 text-sm space-y-1">
+        <h2 class="font-semibold mb-2">Refuge d'origine</h2>
+        <p>{{ animal.refuge.nom }} — {{ animal.refuge.ville }}</p>
+        <p v-if="animal.refuge.telephone">{{ animal.refuge.telephone }}</p>
+        <a
+          v-if="animal.refuge.site_url"
+          :href="animal.refuge.site_url"
+          target="_blank"
+          rel="noopener"
+          class="text-blue-600 hover:underline"
+        >
+          Voir le site du refuge →
+        </a>
+      </div>
+    </div>
+  </main>
+</template>
