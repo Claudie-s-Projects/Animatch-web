@@ -16,6 +16,14 @@ const { data } = await fetchAnimals({ urgence: 'critique', limit: 4 })
       </NuxtLink>
     </section>
 
+    <section class="bg-gray-50 border-y px-4 py-10 text-center">
+      <h2 class="text-xl font-bold mb-2">Prêt à adopter ?</h2>
+      <p class="text-sm text-gray-500 mb-4">Consultez nos guides pratiques pour bien préparer l'arrivée de votre animal.</p>
+      <NuxtLink to="/guides" class="inline-block bg-white border text-sm px-5 py-2 rounded-xl hover:bg-gray-100">
+        Voir les guides d'adoption →
+      </NuxtLink>
+    </section>
+
     <section class="max-w-6xl mx-auto px-4 py-12">
       <div class="flex items-center justify-between mb-6">
         <h2 class="text-xl font-bold">Animaux en attente depuis longtemps</h2>
