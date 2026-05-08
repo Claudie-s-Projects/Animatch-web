@@ -3,35 +3,33 @@ import type { AnimalFilters } from '~/composables/useAnimals'
 
 const emit = defineEmits<{ change: [filters: Omit<AnimalFilters, 'page' | 'limit'>] }>()
 
-const espece = ref('')
-const sexe = ref('')
-const ville = ref('')
+const filters = reactive({ espece: '', sexe: '', ville: '' })
 
 function emitChange() {
   emit('change', {
-    espece: espece.value || undefined,
-    sexe: sexe.value || undefined,
-    ville: ville.value || undefined,
+    espece: filters.espece || undefined,
+    sexe: filters.sexe || undefined,
+    ville: filters.ville || undefined,
   })
 }
 
 function reset() {
-  espece.value = ''
-  sexe.value = ''
-  ville.value = ''
+  filters.espece = ''
+  filters.sexe = ''
+  filters.ville = ''
   emitChange()
 }
 </script>
 
 <template>
   <div class="flex flex-wrap gap-3 mb-8">
-    <select v-model="espece" @change="emitChange" class="border rounded-lg px-3 py-2 text-sm bg-white">
+    <select v-model="filters.espece" @change="emitChange" class="border rounded-lg px-3 py-2 text-sm bg-white">
       <option value="">Toutes les espèces</option>
       <option value="Chien">Chien</option>
       <option value="Chat">Chat</option>
     </select>
 
-    <select v-model="sexe" @change="emitChange" class="border rounded-lg px-3 py-2 text-sm bg-white">
+    <select v-model="filters.sexe" @change="emitChange" class="border rounded-lg px-3 py-2 text-sm bg-white">
       <option value="">Tous les sexes</option>
       <option value="Mâle">Mâle</option>
       <option value="Femelle">Femelle</option>
@@ -39,7 +37,7 @@ function reset() {
 
     <div class="flex gap-2">
       <input
-        v-model="ville"
+        v-model="filters.ville"
         @keyup.enter="emitChange"
         type="text"
         placeholder="Ville du refuge"
