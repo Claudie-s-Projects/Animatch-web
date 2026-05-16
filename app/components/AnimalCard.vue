@@ -1,11 +1,21 @@
 <script setup lang="ts">
 import type { Animal } from '~/composables/useAnimals'
 
-defineProps<{ animal: Animal }>()
+defineProps<{ animal: Animal; isFavori?: boolean; showFavori?: boolean }>()
+defineEmits<{ toggle: [] }>()
 </script>
 
 <template>
-  <NuxtLink :to="`/animals/${animal.id}`" class="block rounded-xl overflow-hidden shadow hover:shadow-md transition bg-white">
+  <NuxtLink :to="`/animals/${animal.id}`" class="relative block rounded-xl overflow-hidden shadow hover:shadow-md transition bg-white">
+    <button
+      v-if="showFavori"
+      @click.prevent.stop="$emit('toggle')"
+      class="absolute top-2 right-2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white/80 shadow text-lg"
+      :title="isFavori ? 'Retirer des favoris' : 'Ajouter aux favoris'"
+    >
+      <span :class="isFavori ? 'text-red-500' : 'text-gray-400'">♥</span>
+    </button>
+
     <img
       v-if="animal.photo_url"
       :src="animal.photo_url"

@@ -1,11 +1,31 @@
 <script setup lang="ts">
 const route = useRoute()
 const { fetchAnimal } = useAnimals()
+const { isLoggedIn } = useAuth()
+const { fetchFavoris, addFavori, removeFavori } = useFavoris()
 
 const { data: animal } = await fetchAnimal(Number(route.params.id))
 
 if (!animal.value) {
   throw createError({ statusCode: 404, message: 'Animal introuvable' })
+}
+
+const isFavori = ref(false)
+
+if (isLoggedIn.value) {
+  const favoris = await fetchFavoris()
+  isFavori.value = favoris.some(f => f.animal.id === animal.value!.id)
+}
+
+async function toggleFavori() {
+  if (!animal.value) return
+  if (isFavori.value) {
+    await removeFavori(animal.value.id)
+    isFavori.value = false
+  } else {
+    await addFavori(animal.value.id)
+    isFavori.value = true
+  }
 }
 </script>
 
@@ -19,6 +39,14 @@ if (!animal.value) {
       <div class="flex items-center gap-3">
         <h1 class="text-3xl font-bold">{{ animal.nom }}</h1>
         <UrgenceBadge :urgence="animal.urgence" />
+        <button
+          v-if="isLoggedIn"
+          @click="toggleFavori"
+          class="ml-auto w-9 h-9 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-xl"
+          :title="isFavori ? 'Retirer des favoris' : 'Ajouter aux favoris'"
+        >
+          <span :class="isFavori ? 'text-red-500' : 'text-gray-400'">♥</span>
+        </button>
       </div>
 
       <img

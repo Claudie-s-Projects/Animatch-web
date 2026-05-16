@@ -1,6 +1,7 @@
 export function useAuth() {
-  const token = useCookie("auth_token");
-  const isLoggedIn = computed(() => !!token.value);
+  const { public: { apiBase } } = useRuntimeConfig()
+  const token = useCookie('auth_token')
+  const isLoggedIn = computed(() => !!token.value)
 
   const prenom = computed(() => {
     if (!token.value) return null;
@@ -9,14 +10,11 @@ export function useAuth() {
   });
 
   async function login(email: string, mot_de_passe: string) {
-    const data = await $fetch<{ access_token: string }>(
-      "http://localhost:3001/auth/login",
-      {
-        method: "POST",
-        body: { email, mot_de_passe },
-      },
-    );
-    token.value = data.access_token;
+    const data = await $fetch<{ access_token: string }>(`${apiBase}/auth/login`, {
+      method: 'POST',
+      body: { email, mot_de_passe },
+    })
+    token.value = data.access_token
   }
 
   function logout() {

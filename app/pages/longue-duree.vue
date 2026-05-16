@@ -16,6 +16,7 @@ const sections = computed(() => [
 
 <template>
   <main class="max-w-6xl mx-auto px-4 py-8">
+    <NuxtLink to="/animals" class="text-sm text-gray-500 hover:underline mb-6 inline-block">← Retour au catalogue</NuxtLink>
     <h1 class="text-2xl font-bold mb-2">Animaux en longue durée</h1>
     <p class="text-sm text-gray-500 mb-8">Ces animaux attendent une famille depuis plus de 30 jours.</p>
 
