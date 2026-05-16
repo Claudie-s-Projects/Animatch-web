@@ -4,10 +4,10 @@ export function useAuth() {
   const isLoggedIn = computed(() => !!token.value)
 
   const prenom = computed(() => {
-    if (!token.value) return null
-    const payload = JSON.parse(atob(token.value.split('.')[1]))
-    return payload.prenom as string
-  })
+    if (!token.value) return null;
+    const payload = JSON.parse(atob(token.value.split(".")[1]));
+    return payload.prenom as string;
+  });
 
   async function login(email: string, mot_de_passe: string) {
     const data = await $fetch<{ access_token: string }>(`${apiBase}/auth/login`, {
@@ -18,8 +18,8 @@ export function useAuth() {
   }
 
   function logout() {
-    token.value = null
+    token.value = null;
   }
 
-  return { isLoggedIn, prenom, login, logout, token }
+  return { isLoggedIn, prenom, login, logout, token };
 }
