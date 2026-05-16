@@ -26,7 +26,7 @@ async function submit() {
         class="border rounded-lg px-4 py-2 text-sm" />
       <p v-if="error" class="text-red-500 text-sm">{{ error }}</p>
       <button type="submit"
-        class="bg-black text-white rounded-lg px-4 py-2 text-sm hover:bg-gray-800">
+        class="bg-blush-400 text-white rounded-lg px-4 py-2 text-sm hover:bg-blush-500">
         Se connecter
       </button>
     </form>

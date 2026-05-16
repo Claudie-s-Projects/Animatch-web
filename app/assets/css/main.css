@@ -1,1 +1,25 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');
+
+@theme {
+  --color-blush-100: #FFF0F6;
+  --color-blush-400: #F986B4;
+  --color-blush-500: #EC5A97;
+
+  --color-creme-50: #F5EDE0;
+
+  --color-brun-700: #5C3D2E;
+  --color-brun-800: #3E2410;
+
+  --color-roux-100: #F5D8C8;
+  --color-roux-300: #C96A1E;
+  --color-roux-600: #9A3F10;
+}
+
+@layer base {
+  body {
+    color: var(--color-brun-800);
+    background-color: var(--color-creme-50);
+    font-family: 'Montserrat', sans-serif;
+  }
+}

@@ -57,7 +57,7 @@ async function submit() {
 
       <p v-if="error" class="text-sm text-red-500">{{ error }}</p>
 
-      <button type="submit" :disabled="loading" class="w-full bg-black text-white py-2 rounded-lg text-sm font-medium hover:bg-gray-800 disabled:opacity-50">
+      <button type="submit" :disabled="loading" class="w-full bg-blush-400 text-white py-2 rounded-lg text-sm font-medium hover:bg-blush-500 disabled:opacity-50">
         {{ loading ? 'Création...' : 'Créer mon compte' }}
       </button>
     </form>

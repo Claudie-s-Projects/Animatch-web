@@ -1,4 +1,5 @@
 export function useAuth() {
+  const { public: { apiBase } } = useRuntimeConfig()
   const token = useCookie('auth_token')
   const isLoggedIn = computed(() => !!token.value)
 
@@ -9,7 +10,7 @@ export function useAuth() {
   })
 
   async function login(email: string, mot_de_passe: string) {
-    const data = await $fetch<{ access_token: string }>('http://localhost:3001/auth/login', {
+    const data = await $fetch<{ access_token: string }>(`${apiBase}/auth/login`, {
       method: 'POST',
       body: { email, mot_de_passe },
     })
