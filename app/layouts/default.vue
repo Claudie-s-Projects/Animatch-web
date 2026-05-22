@@ -20,10 +20,12 @@ function handleLogout() {
         <div class="hidden md:flex items-center gap-6 flex-1">
           <NuxtLink to="/animals" class="text-sm text-roux-100 hover:text-white">Animaux</NuxtLink>
           <NuxtLink to="/guides" class="text-sm text-roux-100 hover:text-white">Guides</NuxtLink>
-          <div class="ml-auto flex gap-3 items-center">
+          <div class="ml-auto flex gap-6 items-center">
             <template v-if="isLoggedIn">
               <span class="text-lg font-semibold text-white">🐾 Bonjour {{ prenom }} !</span>
               <NuxtLink to="/favoris" class="text-sm text-roux-100 hover:text-white">Mes favoris</NuxtLink>
+              <NuxtLink to="/mes-demandes" class="text-sm text-roux-100 hover:text-white">Mes demandes</NuxtLink>
+              <NuxtLink to="/profil" class="text-sm text-roux-100 hover:text-white">Mon profil</NuxtLink>
               <button @click="handleLogout" class="text-sm text-roux-100 hover:text-white">Se déconnecter</button>
             </template>
             <template v-else>
@@ -46,6 +48,8 @@ function handleLogout() {
         <template v-if="isLoggedIn">
           <span class="text-sm font-semibold text-white">🐾 Bonjour {{ prenom }} !</span>
           <NuxtLink to="/favoris" @click="menuOuvert = false" class="text-sm text-roux-100 hover:text-white">Mes favoris</NuxtLink>
+          <NuxtLink to="/mes-demandes" @click="menuOuvert = false" class="text-sm text-roux-100 hover:text-white">Mes demandes</NuxtLink>
+          <NuxtLink to="/profil" @click="menuOuvert = false" class="text-sm text-roux-100 hover:text-white">Mon profil</NuxtLink>
           <button @click="handleLogout" class="text-sm text-roux-100 hover:text-white text-left">Se déconnecter</button>
         </template>
         <template v-else>
