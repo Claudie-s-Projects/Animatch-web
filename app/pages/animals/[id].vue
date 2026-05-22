@@ -3,6 +3,7 @@ const route = useRoute()
 const { fetchAnimal } = useAnimals()
 const { isLoggedIn } = useAuth()
 const { fetchFavoris, addFavori, removeFavori } = useFavoris()
+const { sendDemande } = useDemandes()
 
 const { data: animal } = await fetchAnimal(Number(route.params.id))
 
@@ -11,9 +12,10 @@ if (!animal.value) {
 }
 
 const isFavori = ref(false)
+const demandeEnvoyee = ref(false)
 
 if (isLoggedIn.value) {
-  const favoris = await fetchFavoris()
+  const favoris = await fetchFavoris().catch(() => [])
   isFavori.value = favoris.some(f => f.animal.id === animal.value!.id)
 }
 
@@ -27,6 +29,15 @@ async function toggleFavori() {
     isFavori.value = true
   }
 }
+
+async function faireUneDemande() {
+  if (!animal.value) return
+  const ok = confirm(`Envoyer une demande d'intérêt pour ${animal.value.nom} ?`)
+  if (!ok) return
+  await sendDemande(animal.value.id)
+  demandeEnvoyee.value = true
+}
+
 </script>
 
 <template>
@@ -67,6 +78,18 @@ async function toggleFavori() {
         <h2 class="font-semibold mb-2">Description</h2>
         <p class="text-sm text-gray-700 whitespace-pre-line">{{ animal.description }}</p>
       </div>
+
+      <button
+        v-if="isLoggedIn"
+        @click="faireUneDemande"
+        :disabled="demandeEnvoyee"
+        class="w-full py-3 rounded-xl text-base font-semibold transition shadow-md"
+        :class="demandeEnvoyee
+          ? 'bg-gray-200 text-gray-500 cursor-not-allowed shadow-none'
+          : 'bg-blush-400 text-white hover:bg-blush-500 active:scale-95'"
+      >
+        {{ demandeEnvoyee ? "Demande envoyée ✓" : "🐾 Faire une demande d'intérêt" }}
+      </button>
 
       <div v-if="animal.refuge" class="border rounded-xl p-4 text-sm space-y-1">
         <h2 class="font-semibold mb-2">Refuge d'origine</h2>
