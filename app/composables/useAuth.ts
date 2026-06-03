@@ -1,7 +1,9 @@
 export function useAuth() {
-  const { public: { apiBase } } = useRuntimeConfig()
-  const token = useCookie('auth_token')
-  const isLoggedIn = computed(() => !!token.value)
+  const {
+    public: { apiBase },
+  } = useRuntimeConfig();
+  const token = useCookie("auth_token");
+  const isLoggedIn = computed(() => !!token.value);
 
   const prenom = computed(() => {
     if (!token.value) return null;
@@ -10,12 +12,19 @@ export function useAuth() {
   });
 
   async function login(email: string, mot_de_passe: string) {
-    const data = await $fetch<{ access_token: string }>(`${apiBase}/auth/login`, {
-      method: 'POST',
+    const data = await $fetch<{ access_token: string }>(`/auth/login`, {
+      baseURL: apiBase,
+      method: "POST",
       body: { email, mot_de_passe },
-    })
-    token.value = data.access_token
+    });
+    token.value = data.access_token;
   }
+  // mon ancienne version le localhost n'était pas codé en dur mais de cette manière :  const data = await $fetch<{ access_token: string }>(`${apiBase}/auth/login`, {
+  //   method: 'POST',
+  // body: { email, mot_de_passe },
+  //})
+  //token.value = data.access_token
+  // je ne construit plus "manuellement " l'url ce qui est plus cohérent avec le reste de mes fichiers
 
   function logout() {
     token.value = null;
