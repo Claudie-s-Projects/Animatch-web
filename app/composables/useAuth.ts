@@ -3,11 +3,14 @@ export function useAuth() {
   const token = useCookie('auth_token')
   const isLoggedIn = computed(() => !!token.value)
 
-  const prenom = computed(() => {
-    if (!token.value) return null;
-    const payload = JSON.parse(atob(token.value.split(".")[1]));
-    return payload.prenom as string;
-  });
+  function getPayload() {
+    if (!token.value) return null
+    return JSON.parse(atob(token.value.split('.')[1]))
+  }
+
+  const prenom = computed(() => getPayload()?.prenom as string ?? null)
+  const nom = computed(() => getPayload()?.nom as string ?? null)
+  const role = computed(() => getPayload()?.role as string ?? null)
 
   async function login(email: string, mot_de_passe: string) {
     const data = await $fetch<{ access_token: string }>(`${apiBase}/auth/login`, {
@@ -17,9 +20,17 @@ export function useAuth() {
     token.value = data.access_token
   }
 
-  function logout() {
-    token.value = null;
+  async function loginRefuge(email: string, mot_de_passe: string) {
+    const data = await $fetch<{ access_token: string }>(`${apiBase}/auth/login-refuge`, {
+      method: 'POST',
+      body: { email, mot_de_passe },
+    })
+    token.value = data.access_token
   }
 
-  return { isLoggedIn, prenom, login, logout, token };
+  function logout() {
+    token.value = null
+  }
+
+  return { isLoggedIn, prenom, nom, role, login, loginRefuge, logout, token }
 }

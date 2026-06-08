@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { isLoggedIn, prenom, logout } = useAuth()
+const { isLoggedIn, prenom, nom, role, logout } = useAuth()
 
 const menuOuvert = ref(false)
 
@@ -21,7 +21,12 @@ function handleLogout() {
           <NuxtLink to="/animals" class="text-sm text-roux-100 hover:text-white">Animaux</NuxtLink>
           <NuxtLink to="/guides" class="text-sm text-roux-100 hover:text-white">Guides</NuxtLink>
           <div class="ml-auto flex gap-6 items-center">
-            <template v-if="isLoggedIn">
+            <template v-if="isLoggedIn && role === 'refuge'">
+              <span class="text-lg font-semibold text-white">🐾 {{ nom }}</span>
+              <NuxtLink to="/espace-refuge" class="text-sm text-roux-100 hover:text-white">Espace refuge</NuxtLink>
+              <button @click="handleLogout" class="text-sm text-roux-100 hover:text-white">Se déconnecter</button>
+            </template>
+            <template v-else-if="isLoggedIn">
               <span class="text-lg font-semibold text-white">🐾 Bonjour {{ prenom }} !</span>
               <NuxtLink to="/favoris" class="text-sm text-roux-100 hover:text-white">Mes favoris</NuxtLink>
               <NuxtLink to="/mes-demandes" class="text-sm text-roux-100 hover:text-white">Mes demandes</NuxtLink>
@@ -45,7 +50,12 @@ function handleLogout() {
       <div v-if="menuOuvert" class="md:hidden flex flex-col gap-3 pt-3 border-t border-roux-100/30 mt-3">
         <NuxtLink to="/animals" @click="menuOuvert = false" class="text-sm text-roux-100 hover:text-white">Animaux</NuxtLink>
         <NuxtLink to="/guides" @click="menuOuvert = false" class="text-sm text-roux-100 hover:text-white">Guides</NuxtLink>
-        <template v-if="isLoggedIn">
+        <template v-if="isLoggedIn && role === 'refuge'">
+          <span class="text-sm font-semibold text-white">🐾 {{ nom }}</span>
+          <NuxtLink to="/espace-refuge" @click="menuOuvert = false" class="text-sm text-roux-100 hover:text-white">Espace refuge</NuxtLink>
+          <button @click="handleLogout" class="text-sm text-roux-100 hover:text-white text-left">Se déconnecter</button>
+        </template>
+        <template v-else-if="isLoggedIn">
           <span class="text-sm font-semibold text-white">🐾 Bonjour {{ prenom }} !</span>
           <NuxtLink to="/favoris" @click="menuOuvert = false" class="text-sm text-roux-100 hover:text-white">Mes favoris</NuxtLink>
           <NuxtLink to="/mes-demandes" @click="menuOuvert = false" class="text-sm text-roux-100 hover:text-white">Mes demandes</NuxtLink>

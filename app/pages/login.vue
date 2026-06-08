@@ -1,6 +1,7 @@
 <script setup lang="ts">
-const { login } = useAuth()
+const { login, loginRefuge } = useAuth()
 
+const type = ref<'famille' | 'refuge'>('famille')
 const email = ref('')
 const motDePasse = ref('')
 const error = ref('')
@@ -8,8 +9,13 @@ const error = ref('')
 async function submit() {
   error.value = ''
   try {
-    await login(email.value, motDePasse.value)
-    navigateTo('/')
+    if (type.value === 'refuge') {
+      await loginRefuge(email.value, motDePasse.value)
+      navigateTo('/espace-refuge')
+    } else {
+      await login(email.value, motDePasse.value)
+      navigateTo('/')
+    }
   } catch {
     error.value = 'Email ou mot de passe incorrect.'
   }
@@ -19,6 +25,24 @@ async function submit() {
 <template>
   <div class="max-w-sm mx-auto mt-16 px-4">
     <h1 class="text-2xl font-bold mb-6">Connexion</h1>
+
+    <div class="flex rounded-lg border overflow-hidden mb-6 text-sm">
+      <button
+        @click="type = 'famille'"
+        :class="type === 'famille' ? 'bg-roux-300 text-white' : 'text-gray-500 hover:bg-gray-50'"
+        class="flex-1 py-2 transition-colors"
+      >
+        Famille
+      </button>
+      <button
+        @click="type = 'refuge'"
+        :class="type === 'refuge' ? 'bg-roux-300 text-white' : 'text-gray-500 hover:bg-gray-50'"
+        class="flex-1 py-2 transition-colors"
+      >
+        Refuge
+      </button>
+    </div>
+
     <form @submit.prevent="submit" class="flex flex-col gap-4">
       <input v-model="email" type="email" placeholder="Email" required
         class="border rounded-lg px-4 py-2 text-sm" />
@@ -30,6 +54,7 @@ async function submit() {
         Se connecter
       </button>
     </form>
+
     <p class="mt-4 text-sm text-gray-500">
       Pas encore de compte ?
       <NuxtLink to="/register" class="underline">S'inscrire</NuxtLink>
