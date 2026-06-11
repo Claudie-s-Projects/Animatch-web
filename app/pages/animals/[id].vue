@@ -1,48 +1,51 @@
 <script setup lang="ts">
-const route = useRoute()
-const { fetchAnimal } = useAnimals()
-const { isLoggedIn } = useAuth()
-const { fetchFavoris, addFavori, removeFavori } = useFavoris()
-const { sendDemande } = useDemandes()
+const route = useRoute();
+const { fetchAnimal } = useAnimals();
+const { isLoggedIn } = useAuth();
+const { fetchFavoris, addFavori, removeFavori } = useFavoris();
+const { sendDemande } = useDemandes();
 
-const { data: animal } = await fetchAnimal(Number(route.params.id))
+const { data: animal } = await fetchAnimal(Number(route.params.id));
 
 if (!animal.value) {
-  throw createError({ statusCode: 404, message: 'Animal introuvable' })
+  throw createError({ statusCode: 404, message: "Animal introuvable" });
 }
 
-const isFavori = ref(false)
-const demandeEnvoyee = ref(false)
+const isFavori = ref(false);
+const demandeEnvoyee = ref(false);
+const showForm = ref(false);
+const message = ref("");
 
 if (isLoggedIn.value) {
-  const favoris = await fetchFavoris().catch(() => [])
-  isFavori.value = favoris.some(f => f.animal.id === animal.value!.id)
+  const favoris = await fetchFavoris().catch(() => []);
+  isFavori.value = favoris.some((f) => f.animal.id === animal.value!.id);
 }
 
 async function toggleFavori() {
-  if (!animal.value) return
+  if (!animal.value) return;
   if (isFavori.value) {
-    await removeFavori(animal.value.id)
-    isFavori.value = false
+    await removeFavori(animal.value.id);
+    isFavori.value = false;
   } else {
-    await addFavori(animal.value.id)
-    isFavori.value = true
+    await addFavori(animal.value.id);
+    isFavori.value = true;
   }
 }
 
 async function faireUneDemande() {
-  if (!animal.value) return
-  const ok = confirm(`Envoyer une demande d'intérêt pour ${animal.value.nom} ?`)
-  if (!ok) return
-  await sendDemande(animal.value.id)
-  demandeEnvoyee.value = true
+  if (!animal.value) return;
+  await sendDemande(animal.value.id, message.value || undefined);
+  demandeEnvoyee.value = true;
+  showForm.value = false;
 }
-
 </script>
 
 <template>
   <main class="max-w-3xl mx-auto px-4 py-8">
-    <NuxtLink to="/animals" class="text-sm text-gray-500 hover:underline mb-6 inline-block">
+    <NuxtLink
+      to="/animals"
+      class="text-sm text-gray-500 hover:underline mb-6 inline-block"
+    >
       ← Retour au catalogue
     </NuxtLink>
 
@@ -68,28 +71,67 @@ async function faireUneDemande() {
       />
 
       <div class="grid grid-cols-2 gap-4 text-sm">
-        <div><span class="text-gray-500">Espèce</span><p class="font-medium">{{ animal.espece ?? '—' }}</p></div>
-        <div><span class="text-gray-500">Race</span><p class="font-medium">{{ animal.race ?? '—' }}</p></div>
-        <div><span class="text-gray-500">Âge</span><p class="font-medium">{{ animal.age ?? '—' }}</p></div>
-        <div><span class="text-gray-500">Sexe</span><p class="font-medium">{{ animal.sexe ?? '—' }}</p></div>
+        <div>
+          <span class="text-gray-500">Espèce</span>
+          <p class="font-medium">{{ animal.espece ?? "—" }}</p>
+        </div>
+        <div>
+          <span class="text-gray-500">Race</span>
+          <p class="font-medium">{{ animal.race ?? "—" }}</p>
+        </div>
+        <div>
+          <span class="text-gray-500">Âge</span>
+          <p class="font-medium">{{ animal.age ?? "—" }}</p>
+        </div>
+        <div>
+          <span class="text-gray-500">Sexe</span>
+          <p class="font-medium">{{ animal.sexe ?? "—" }}</p>
+        </div>
       </div>
 
       <div v-if="animal.description">
         <h2 class="font-semibold mb-2">Description</h2>
-        <p class="text-sm text-gray-700 whitespace-pre-line">{{ animal.description }}</p>
+        <p class="text-sm text-gray-700 whitespace-pre-line">
+          {{ animal.description }}
+        </p>
       </div>
 
-      <button
-        v-if="isLoggedIn"
-        @click="faireUneDemande"
-        :disabled="demandeEnvoyee"
-        class="w-full py-3 rounded-xl text-base font-semibold transition shadow-md"
-        :class="demandeEnvoyee
-          ? 'bg-gray-200 text-gray-500 cursor-not-allowed shadow-none'
-          : 'bg-blush-400 text-white hover:bg-blush-500 active:scale-95'"
-      >
-        {{ demandeEnvoyee ? "Demande envoyée ✓" : "🐾 Faire une demande d'intérêt" }}
-      </button>
+      <div v-if="isLoggedIn && !demandeEnvoyee">
+        <button
+          v-if="!showForm"
+          @click="showForm = true"
+          class="w-full py-3 rounded-xl text-base font-semibold bg-blush-400 text-white hover:bg-blush-500 active:scale-95 transition shadow-md"
+        >
+          🐾 Faire une demande d'intérêt
+        </button>
+        <div v-else class="space-y-3">
+          <textarea
+            v-model="message"
+            placeholder="Présentez-vous et expliquez pourquoi cet animal
+  vous correspond (optionnel)"
+            rows="4"
+            class="w-full border rounded-xl px-3 py-2 text-sm resize-none"
+          />
+          <div class="flex gap-2">
+            <button
+              @click="showForm = false"
+              class="flex-1 py-2 rounded-xl border text-sm"
+            >
+              Annuler
+            </button>
+            <button
+              @click="faireUneDemande"
+              class="flex-1 py-2 rounded-xl bg-blush-400 text-white text-sm font-semibold hover:bg-blush-500"
+            >
+              Envoyer
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <p v-if="demandeEnvoyee" class="text-center text-green-600 font-medium">
+        Demande envoyée ✓
+      </p>
 
       <div v-if="animal.refuge" class="border rounded-xl p-4 text-sm space-y-1">
         <h2 class="font-semibold mb-2">Refuge d'origine</h2>

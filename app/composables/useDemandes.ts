@@ -1,46 +1,48 @@
 export interface Demande {
-  id: number
+  id: number;
   animal: {
-    id: number
-    nom: string
-    photo_url: string | null
-    refuge: { nom: string; ville: string } | null
-  }
-  statut: string
-  created_at: string
+    id: number;
+    nom: string;
+    photo_url: string | null;
+    refuge: { nom: string; ville: string } | null;
+  };
+  statut: string;
+  created_at: string;
 }
 
 export function useDemandes() {
-  const { public: { apiBase } } = useRuntimeConfig()
-  const { token } = useAuth()
+  const {
+    public: { apiBase },
+  } = useRuntimeConfig();
+  const { token } = useAuth();
 
   function authHeaders() {
-    return { Authorization: `Bearer ${token.value}` }
+    return { Authorization: `Bearer ${token.value}` };
   }
 
   function fetchDemandes() {
-    return $fetch<Demande[]>('/demandes', {
+    return $fetch<Demande[]>("/demandes", {
       baseURL: apiBase,
       headers: authHeaders(),
-    })
+    });
   }
 
-  function sendDemande(animalId: number) {
-    return $fetch('/demandes', {
-      method: 'POST',
+  function sendDemande(animalId: number, message?: string) {
+    return $fetch("/demandes", {
+      method: "POST",
       baseURL: apiBase,
       headers: authHeaders(),
-      body: { animalId },
-    })
+      body: { animalId, message },
+    });
   }
 
   function cancelDemande(animalId: number) {
     return $fetch(`/demandes/${animalId}`, {
-      method: 'DELETE',
+      method: "DELETE",
       baseURL: apiBase,
       headers: authHeaders(),
-    })
+    });
   }
 
-  return { fetchDemandes, sendDemande, cancelDemande }
+  return { fetchDemandes, sendDemande, cancelDemande };
 }
