@@ -3,7 +3,7 @@ const route = useRoute();
 const { fetchAnimal } = useAnimals();
 const { isLoggedIn } = useAuth();
 const { fetchFavoris, addFavori, removeFavori } = useFavoris();
-const { sendDemande } = useDemandes();
+const { sendDemande, fetchDemandes } = useDemandes();
 
 const { data: animal } = await fetchAnimal(Number(route.params.id));
 
@@ -17,6 +17,10 @@ const showForm = ref(false);
 const message = ref("");
 
 if (isLoggedIn.value) {
+  const demandesExistantes = await fetchDemandes().catch(() => []);
+  demandeEnvoyee.value = demandesExistantes.some(
+    (d) => d.animal.id === animal.value!.id,
+  );
   const favoris = await fetchFavoris().catch(() => []);
   isFavori.value = favoris.some((f) => f.animal.id === animal.value!.id);
 }
@@ -34,7 +38,10 @@ async function toggleFavori() {
 
 async function faireUneDemande() {
   if (!animal.value) return;
-  await sendDemande(animal.value.id, message.value || undefined);
+  try {
+    await sendDemande(animal.value.id, message.value || undefined);
+  } catch {}
+
   demandeEnvoyee.value = true;
   showForm.value = false;
 }
