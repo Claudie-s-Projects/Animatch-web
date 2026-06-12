@@ -10,6 +10,23 @@ export interface Demande {
   created_at: string;
 }
 
+export interface DemandeRefuge {
+  id: number;
+  statut: string;
+  message: string | null;
+  created_at: string;
+  animal: { id: number; nom: string };
+  famille: {
+    prenom: string;
+    nom: string;
+    logement: string | null;
+    enfants: string | null;
+    animaux: string | null;
+    activite: string | null;
+    experience: string | null;
+  };
+}
+
 export function useDemandes() {
   const {
     public: { apiBase },
@@ -44,5 +61,27 @@ export function useDemandes() {
     });
   }
 
-  return { fetchDemandes, sendDemande, cancelDemande };
+  function fetchDemandesRefuge() {
+    return $fetch<DemandeRefuge[]>("/demandes/refuge", {
+      baseURL: apiBase,
+      headers: authHeaders(),
+    });
+  }
+
+  function updateStatut(id: number, statut: string) {
+    return $fetch(`/demandes/${id}/statut`, {
+      method: "PATCH",
+      baseURL: apiBase,
+      headers: authHeaders(),
+      body: { statut },
+    });
+  }
+
+  return {
+    fetchDemandes,
+    sendDemande,
+    cancelDemande,
+    fetchDemandesRefuge,
+    updateStatut,
+  };
 }
