@@ -1,5 +1,5 @@
-@import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');
+@import "tailwindcss";
 
 @theme {
   --color-blush-100: #FFF0F6;
@@ -8,6 +8,7 @@
 
   --color-creme-50: #F5EDE0;
 
+  --color-brun-400: #9E7B6B;
   --color-brun-700: #5C3D2E;
   --color-brun-800: #3E2410;
 
