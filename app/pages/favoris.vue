@@ -16,11 +16,16 @@ async function retirerFavori(animalId: number) {
 </script>
 
 <template>
-  <main class="max-w-5xl mx-auto px-4 py-8">
-    <NuxtLink to="/" class="text-sm text-gray-500 hover:underline mb-6 inline-block">← Retour à l'accueil</NuxtLink>
-    <h1 class="text-2xl font-bold mb-6">Mes favoris</h1>
+  <div class="px-8 pt-6 pb-4">
+    <NuxtLink to="/" class="inline-flex items-center gap-1.5 text-sm text-brun-400 hover:text-blush-500 group">
+      <span class="inline-block group-hover:-translate-x-1 transition-transform duration-150">‹</span>
+      Accueil
+    </NuxtLink>
+  </div>
+  <main class="max-w-5xl mx-auto px-4 pb-8">
+    <h1 class="text-2xl font-bold text-brun-800 mb-6">Mes favoris</h1>
 
-    <p v-if="animaux.length === 0" class="text-gray-500">
+    <p v-if="animaux.length === 0" class="text-brun-400">
       Tu n'as pas encore d'animaux favoris.
     </p>
 

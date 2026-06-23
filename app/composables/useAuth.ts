@@ -1,25 +1,40 @@
 export function useAuth() {
-  const { public: { apiBase } } = useRuntimeConfig()
-  const token = useCookie('auth_token')
-  const isLoggedIn = computed(() => !!token.value)
+  const {
+    public: { apiBase },
+  } = useRuntimeConfig();
+  const token = useCookie("auth_token");
+  const isLoggedIn = computed(() => !!token.value);
 
-  const prenom = computed(() => {
+  function getPayload() {
     if (!token.value) return null;
-    const payload = JSON.parse(atob(token.value.split(".")[1]));
-    return payload.prenom as string;
-  });
+    return JSON.parse(atob(token.value.split(".")[1]));
+  }
+
+  const prenom = computed(() => (getPayload()?.prenom as string) ?? null);
+  const nom = computed(() => (getPayload()?.nom as string) ?? null);
+  const role = computed(() => (getPayload()?.role as string) ?? null);
 
   async function login(email: string, mot_de_passe: string) {
-    const data = await $fetch<{ access_token: string }>(`${apiBase}/auth/login`, {
-      method: 'POST',
+    const data = await $fetch<{ access_token: string }>(`/auth/login`, {
+      baseURL: apiBase,
+      method: "POST",
       body: { email, mot_de_passe },
-    })
-    token.value = data.access_token
+    });
+    token.value = data.access_token;
+  }
+
+  async function loginRefuge(email: string, mot_de_passe: string) {
+    const data = await $fetch<{ access_token: string }>(`/auth/login-refuge`, {
+      baseURL: apiBase,
+      method: "POST",
+      body: { email, mot_de_passe },
+    });
+    token.value = data.access_token;
   }
 
   function logout() {
     token.value = null;
   }
 
-  return { isLoggedIn, prenom, login, logout, token };
+  return { isLoggedIn, prenom, nom, role, login, loginRefuge, logout, token };
 }
